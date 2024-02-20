@@ -11,4 +11,8 @@ public class DateUtil {
 		int remainder = year % 4;
 		return remainder == 0;
 	}
+	
+	public static boolean isWeekend(WeekDay weekDay) {
+		return WeekDay.Saturday.equals(weekDay) || WeekDay.Sunday.equals(weekDay);
+	}
 }

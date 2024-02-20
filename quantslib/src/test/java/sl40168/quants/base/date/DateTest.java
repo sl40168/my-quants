@@ -38,4 +38,15 @@ public class DateTest {
 		assertEquals(new Date(2024, 1, 1), new Date(2024, 1, 1).moveDays(0));
 		assertEquals(new Date(2023, 12, 31), new Date(2024, 12, 31).moveDays(-366));
 	}
+	
+	@Test
+	public void testWeekDay() {
+		assertEquals(WeekDay.Friday, new Date(1999, 1, 1).getWeekDay());
+		assertEquals(WeekDay.Monday, new Date(1999, 3, 1).getWeekDay());
+		assertEquals(WeekDay.Saturday, new Date(2024, 2, 17).getWeekDay());
+		assertEquals(WeekDay.Sunday, new Date(2024, 2, 18).getWeekDay());
+		assertEquals(WeekDay.Tuesday, new Date(2024, 2, 20).getWeekDay());
+		assertEquals(WeekDay.Wednesday, new Date(2024, 2, 21).getWeekDay());
+		assertEquals(WeekDay.Thursday, new Date(2024, 2, 22).getWeekDay());
+	}
 }

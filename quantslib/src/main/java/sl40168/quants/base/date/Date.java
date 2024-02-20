@@ -17,6 +17,7 @@ public class Date {
 	private Month month;
 	private int day;
 	private int date;
+	private WeekDay weekDay;
 
 	public Date(int year, Month month, int day) {
 		isValid(year, month, day);
@@ -24,6 +25,7 @@ public class Date {
 		this.month = month;
 		this.day = day;
 		this.date = toDate(this.year, this.month, this.day);
+		this.weekDay = calcWeekDay(this.year, this.month, this.day);
 	}
 
 	public Date(int year, int month, int day) {
@@ -32,13 +34,18 @@ public class Date {
 		this.month = Month.parse(month);
 		this.day = day;
 		this.date = toDate(this.year, this.month, this.day);
+		this.weekDay = calcWeekDay(this.year, this.month, this.day);
 	}
-	
+
+	public WeekDay getWeekDay() {
+		return weekDay;
+	}
+
 	public Date moveDays(int days) {
 		int newDate = this.date + days;
 		return fromDate(newDate);
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return Objects.hash(this.year, this.month, this.day);
@@ -61,7 +68,7 @@ public class Date {
 
 	@Override
 	public String toString() {
-		return String.valueOf(this.year) + "/" + String.valueOf(this.month.month) + "/" + String.valueOf(this.day);
+		return String.valueOf(this.year) + "/" + String.valueOf(this.month.getMonth()) + "/" + String.valueOf(this.day);
 	}
 
 	public int getDate() {
@@ -91,12 +98,20 @@ public class Date {
 		}
 		days += numberOfLeapYear;
 		for (Month m : Month.values()) {
-			if (m.month < month.month) {
+			if (m.getMonth() < month.getMonth()) {
 				days += m.getMaxDays(year);
 			}
 		}
 		days += day;
 		return days;
+	}
+	
+	public int between(Date other) {
+		return this.getDate() - other.getDate();
+	}
+	
+	public int lengthOfYear( ) {
+		return DateUtil.isLeapYear(this.year) ? 366 : 365;
 	}
 
 	public static Date fromDate(int date) {
@@ -124,11 +139,30 @@ public class Date {
 		return new Date(year, month, leftDays);
 	}
 
+	/**
+	 * Base on Kim larsen calculation formula and the first day of week is Monday
+	 * 
+	 * @param year
+	 * @param month
+	 * @param day
+	 * @return
+	 */
+	private static WeekDay calcWeekDay(int year, Month month, int day) {
+		int y = year, m = month.getMonth(), d = day;
+		if (m == 1 || m == 2) {
+			m += 12;
+			y -= 1;
+		}
+		int dayOfWeek = (d + 2 * m + 3 * (m + 1) / 5 + y + y / 4 - y / 100 + y / 400) % 7;
+
+		return WeekDay.values()[dayOfWeek];
+	}
+
 	private static void isValid(int year, Month month, int day) {
 		if (null == month) {
 			throw new InvalidDateException(year, 0, day);
 		}
-		isValid(year, month.month, day);
+		isValid(year, month.getMonth(), day);
 	}
 
 	private static void isValid(int year, int month, int day) {
